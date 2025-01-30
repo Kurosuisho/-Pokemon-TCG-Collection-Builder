@@ -32,7 +32,39 @@ cors = CORS(app)
 # auth routes
 @app.route('/auth/register', methods=['POST'], strict_slashes=False)
 def register():
-    return jsonify({"message": "Register Test successful"})
+    try:
+        # Extract JSON data from request
+        data = request.get_json()
+
+        # Validate required fields
+        required_fields = {"username", "email", "password"}
+        if not data or not required_fields.issubset(data):
+            return jsonify({"error": "Missing username, email, or password"}), 400
+
+        username = data["username"]
+        email = data["email"]
+        password = data["password"]
+
+        # Check if username or email is already taken
+        if User.query.filter_by(username=username).first():
+            return jsonify({"error": "Username already exists"}), 409
+        if User.query.filter_by(email=email).first():
+            return jsonify({"error": "Email already exists"}), 409
+
+        # Hash the password
+        hashed_password = generate_password_hash(password)
+
+        # Create new user instance
+        new_user = User(username=username, email=email, password_hash=hashed_password)
+
+        # Save user to database
+        db.session.add(new_user)
+        db.session.commit()
+
+        return jsonify({"message": "User registered successfully"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/auth/login', methods=['POST'])
