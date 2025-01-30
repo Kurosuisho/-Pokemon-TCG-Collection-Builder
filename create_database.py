@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
     Column, Integer, String, Boolean, DateTime, ForeignKey, JSON, Text, create_engine, func
 )
@@ -12,17 +13,17 @@ load_dotenv("data/.env")
 
 Base = declarative_base()
 
+db = SQLAlchemy()
 
-class User(Base):
+class User(db.Model):
     __tablename__ = 'users'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String, nullable=False, unique=True)
-    email = Column(String, nullable=False, unique=True)
-    password_hash = Column(String, nullable=False)
-    profile_picture = Column(String)
-    date_joined = Column(DateTime, default=func.current_timestamp())
-    last_login = Column(DateTime)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String, nullable=False, unique=True)
+    email = db.Column(db.String, nullable=False, unique=True)
+    password_hash = db.Column(db.String, nullable=False)
+    profile_picture = db.Column(String)
+    date_joined = db.Column(DateTime, default=func.current_timestamp())
+    last_login = db.Column(DateTime)
 
     collections = relationship("Collection", back_populates="user")
     decks = relationship("Deck", back_populates="user")
