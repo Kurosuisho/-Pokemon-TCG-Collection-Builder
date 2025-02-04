@@ -12,13 +12,14 @@ from werkzeug.security import generate_password_hash
 from create_database import db, User
 
 
-app = Flask(__name__)
-
 # Load environment variables
 load_dotenv()
 
+app = Flask(__name__)
+
+
 # Configure database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("Backend Project\data", "sqlite:///database.db")
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:Thisisatest25!@localhost:5432/Project Database"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "supersecretkey")
 
@@ -30,12 +31,18 @@ cors = CORS(app)
 
 
 # auth routes
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"message": "Home Test successful"})
+
+
 @app.route('/auth/register', methods=['POST'], strict_slashes=False)
 def register():
+    print("Working")
     try:
         # Extract JSON data from request
         data = request.get_json()
-
+        
         # Validate required fields
         required_fields = {"username", "email", "password"}
         if not data or not required_fields.issubset(data):
@@ -44,19 +51,13 @@ def register():
         username = data["username"]
         email = data["email"]
         password = data["password"]
-
-        # Check if username or email is already taken
-        if User.query.filter_by(username=username).first():
-            return jsonify({"error": "Username already exists"}), 409
-        if User.query.filter_by(email=email).first():
-            return jsonify({"error": "Email already exists"}), 409
-
+        
         # Hash the password
         hashed_password = generate_password_hash(password)
-
+        
         # Create new user instance
         new_user = User(username=username, email=email, password_hash=hashed_password)
-
+        
         # Save user to database
         db.session.add(new_user)
         db.session.commit()
@@ -67,7 +68,7 @@ def register():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/auth/login', methods=['POST'])
+@app.route('/auth/login', methods=['POST', 'GET'])
 def login():
     return jsonify({"message": "Login Test successful"})
 

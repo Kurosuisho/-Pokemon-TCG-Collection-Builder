@@ -11,7 +11,6 @@ from pokemontcgsdk import RestClient
 
 load_dotenv("data/.env")
 
-Base = declarative_base()
 
 db = SQLAlchemy()
 
@@ -29,7 +28,7 @@ class User(db.Model):
     decks = relationship("Deck", back_populates="user")
 
 
-class Card(Base):
+class Card(db.Model):
     __tablename__ = 'cards'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -51,7 +50,7 @@ class Card(Base):
     deck_cards = relationship("DeckCard", back_populates="card")
 
 
-class Collection(Base):
+class Collection(db.Model):
     __tablename__ = 'collections'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -65,7 +64,7 @@ class Collection(Base):
     card = relationship("Card", back_populates="collections")
 
 
-class Deck(Base):
+class Deck(db.Model):
     __tablename__ = 'decks'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -80,7 +79,7 @@ class Deck(Base):
     deck_cards = relationship("DeckCard", back_populates="deck")
 
 
-class DeckCard(Base):
+class DeckCard(db.Model):
     __tablename__ = 'deck_cards'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -99,7 +98,7 @@ db_name = "database.db"
 db_path = f"{db_directory}/{db_name}"
 
 engine = create_engine(f"sqlite:///{db_path}")
-Base.metadata.create_all(engine)
+db.Model.metadata.create_all(engine)
 
 # Create a session to interact with the database
 Session = sessionmaker(bind=engine)
@@ -132,7 +131,7 @@ def insert_pokemon_cards(cards):
             # Show progress every 10 cards
             if index % 10 == 0:
                 progress = (index / total_cards) * 100
-                print(f"Processing card {index}/{total_cards} ({progress:.1f}%)...")
+                # print(f"Processing card {index}/{total_cards} ({progress:.1f}%)...")
             
             # Safely handle retreat cost
             retreat_cost = len(card.retreat_cost) if hasattr(card, 'retreat_cost') and card.retreat_cost else None
