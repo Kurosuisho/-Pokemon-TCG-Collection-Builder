@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
     Column, Integer, String, Boolean, DateTime, ForeignKey, JSON, Text, create_engine, func
@@ -14,18 +15,21 @@ load_dotenv("data/.env")
 
 db = SQLAlchemy()
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String, nullable=False, unique=True)
-    email = db.Column(db.String, nullable=False, unique=True)
-    password_hash = db.Column(db.String, nullable=False)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
     profile_picture = db.Column(String)
     date_joined = db.Column(DateTime, default=func.current_timestamp())
     last_login = db.Column(DateTime)
 
     collections = relationship("Collection", back_populates="user")
     decks = relationship("Deck", back_populates="user")
+    
+    def __repr__(self):
+        return f'<User {self.username}>'
 
 
 class Card(db.Model):
