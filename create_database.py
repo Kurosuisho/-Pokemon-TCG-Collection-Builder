@@ -43,7 +43,7 @@ class User(db.Model, UserMixin):
 class Card(db.Model):
     __tablename__ = 'cards'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     set_name = Column(String, nullable=False)
     card_type = Column(String)
@@ -78,6 +78,13 @@ class Collection(db.Model):
         if quantity < 1:
             raise ValueError('Quantity must be at least 1')
         return quantity
+
+    @validates('card_condition')
+    def validate_card_condition(self, key, condition):
+        valid_conditions = ['Near Mint', 'Lightly Played', 'Moderately Played', 'Heavily Played', 'Damaged']
+        if condition not in valid_conditions:
+            raise ValueError(f'Invalid card condition. Must be one of: {", ".join(valid_conditions)}')
+        return condition
 
 
 class Deck(db.Model):
