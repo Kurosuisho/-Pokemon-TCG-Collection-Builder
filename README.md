@@ -1,15 +1,68 @@
-# -Pokemon-TCG-Collection-Builder
+# Pokémon TCG Collection Builder
 
-To-Do:
+The Pokémon TCG Collection Builder is a web application designed to help users manage their Pokémon Trading Card Game (TCG) collections and decks. It provides functionalities to organize cards, create decks, and track collection progress.​ Features.
+
+## Features
+
+Card Management: Add, view, and organize Pokémon TCG cards within your personal collection.​
+
+Deck Building: Construct and manage decks using the cards from your collection.​
+
+Ai Chatbot powered by Googles Gemini for deck building or collecting assistance
 
 
-fix get all cards bug:
-"error": "(psycopg2.errors.InvalidTextRepresentation) FEHLER:  ungültige Eingabesyntax für Typ integer: »hgss4-1«\nLINE 3: WHERE cards.id = 'hgss4-1'\n                         ^\n\n[SQL: SELECT cards.id AS cards_id, cards.name AS cards_name, cards.set_name AS cards_set_name, cards.card_type AS cards_card_type, cards.rarity AS cards_rarity, cards.energy_type AS cards_energy_type, cards.hp AS cards_hp, cards.attack_names AS cards_attack_names, cards.description AS cards_description, cards.evolution_stage AS cards_evolution_stage, cards.weakness AS cards_weakness, cards.resistance AS cards_resistance, cards.retreat_cost AS cards_retreat_cost, cards.created_at AS cards_created_at \nFROM cards \nWHERE cards.id = %(pk_1)s]\n[parameters: {'pk_1': 'hgss4-1'}]\n(Background on this error at: https://sqlalche.me/e/20/9h9h)"
+## Folder Structure
 
-add collection to user
+app.py: Main application script that initializes and runs the web server.​
 
-add deck to user
+app/: Directory containing the main frame of the project
 
-add card to collection
+data/: Directory containing data files related to the project.
 
-add card from specific collection to deck
+scripts/: Directory containing script to set up the database schema.​
+
+requirements.txt: List of Python dependencies required for the project.​
+
+
+## Installation
+
+Clone the Repository:
+
+```bash
+git clone https://github.com/Kurosuisho/Pokemon-TCG-Collection-Builder.git
+```
+
+Open a Terminal window and navigate to the Project Directory:
+
+```bash
+cd 'Folder/Where/You/Saved/The/Program/Pokémon TCG Collection Builder'
+```
+
+Install Dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Navigate to the Project Directory:
+
+```bash
+cd 'Folder/Where/You/Saved/The/Program/Pokémon TCG Collection Builder'
+```
+Set Up the Database:
+
+        Ensure you have PostgreSQL installed and running.​
+
+        Create a new PostgreSQL database.​
+
+        Configure the database connection settings in the application as needed.​
+
+        Initialize the database: python create_database.py
+
+## Usage
+
+Run the Application:
+
+    python app.py
+
+Access the application in your web browser at http://localhost:5000
