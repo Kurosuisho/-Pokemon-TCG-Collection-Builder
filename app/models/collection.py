@@ -15,7 +15,7 @@ class Collection(db.Model):
 
     # Relationships
     user = relationship("User", back_populates="collections")
-    card = relationship("Card", backref="collections")
+    card = relationship("Card", back_populates="collections")
 
     @validates('quantity')
     def validate_quantity(self, key, quantity):

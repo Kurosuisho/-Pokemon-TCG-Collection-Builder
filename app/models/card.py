@@ -1,5 +1,6 @@
 
 from sqlalchemy import Column, String, Integer, Text, JSON, DateTime, func
+from sqlalchemy.orm import relationship
 from app.db import db
 
 class Card(db.Model):
@@ -19,3 +20,18 @@ class Card(db.Model):
     resistance = Column(String)
     retreat_cost = Column(Integer)
     created_at = Column(DateTime, default=func.current_timestamp())
+    
+    collections = relationship(
+        "Collection",
+        back_populates="card",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
+    
+    # Define relationship with Deck.
+    decks = relationship(
+        "Deck",
+        back_populates="card",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )

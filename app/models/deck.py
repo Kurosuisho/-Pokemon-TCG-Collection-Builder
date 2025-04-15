@@ -7,14 +7,16 @@ class Deck(db.Model):
     __tablename__ = 'decks'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
+    card_id = Column(String, ForeignKey('cards.id', ondelete="CASCADE"), nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     name = Column(String, nullable=False)
     description = Column(String)
     is_public = Column(Boolean, default=False)
     created_at = Column(DateTime, default=func.current_timestamp())
     last_updated = Column(DateTime, default=func.current_timestamp())
-
+    
     user = relationship("User", back_populates="decks")
+    card = relationship("Card", back_populates="decks")
 
 class DeckCard(db.Model):
     __tablename__ = 'deck_cards'
