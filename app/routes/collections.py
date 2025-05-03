@@ -50,13 +50,33 @@ def create_collection():
       - Collections
     security:
       - Bearer: []
+    consumes:
+      - application/json
+    parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            card_id:
+              type: string
+            quantity:
+              type: integer
     responses:
-      200:
+      201:
         description: Collection created successfully
+      400:
+        description: Missing card ID or bad input
+      500:
+        description: Server error
     """
     try:
         current_user_id = get_jwt_identity()
-        data = request.get_json()
+        data = request.get_json(silent=True)
+        if not data:
+            return jsonify({"error": "Missing or invalid JSON body"}), 400
+
         card_id = data.get("card_id")
         quantity = data.get("quantity", 1)
 
@@ -67,7 +87,10 @@ def create_collection():
         db.session.add(new_collection)
         db.session.commit()
 
-        return jsonify({"message": "Collection created successfully", "collection_id": new_collection.id}), 201
+        return jsonify({
+            "message": "Collection created successfully",
+            "collection_id": new_collection.id
+        }), 201
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

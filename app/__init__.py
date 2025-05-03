@@ -23,7 +23,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     migrate = Migrate(app, db)
     jwt = JWTManager(app)
-    cors = CORS(app)
+    cors = CORS(app, resources={r"/*": {"origins": "*"}}, expose_headers=["Authorization"], supports_credentials=True)
     limiter = Limiter(get_remote_address, app=app, default_limits=["5 per minute"])
     
     

@@ -28,10 +28,15 @@ class Card(db.Model):
         passive_deletes=True
     )
     
-    # Define relationship with Deck.
+    deck_cards = relationship(
+        "DeckCard",
+        back_populates="card",
+        cascade="all, delete-orphan"
+    )
+    
     decks = relationship(
         "Deck",
-        back_populates="card",
-        cascade="all, delete-orphan",
-        passive_deletes=True
+        secondary="deck_cards",
+        viewonly=True,
+        back_populates="cards"
     )
