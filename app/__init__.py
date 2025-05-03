@@ -36,19 +36,28 @@ def create_app(config_class=Config):
     app.register_blueprint(chat_bp, url_prefix='/chat')
     
     swagger = Swagger(app, config={
-        "headers": [],
-        "specs": [
-            {
-                "endpoint": 'apispec_1',
-                "route": '/apispec_1.json',
-                "rule_filter": lambda rule: True,
-                "model_filter": lambda tag: True,
-            }
-        ],
-        "static_url_path": "/flasgger_static",
-        "swagger_ui": True,
-        "specs_route": "/apidocs/"
-    })
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": 'apispec_1',
+            "route": '/apispec_1.json',
+            "rule_filter": lambda rule: True,
+            "model_filter": lambda tag: True,
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    "swagger_ui": True,
+    "specs_route": "/apidocs/",
+    "securityDefinitions": {
+        "Bearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'"
+        }
+    },
+    "security": [{"Bearer": []}],
+})
     
     @app.route('/')
     def index():
