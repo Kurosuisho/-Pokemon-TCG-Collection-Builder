@@ -58,15 +58,14 @@ def delete_card(id):
         description: An error occurred during deletion
     """
     try:
-        # Retrieve the card with the given id.
         card = Card.query.get(id)
         if not card:
             return jsonify({"message": f"Card with id '{id}' not found."}), 404
 
-        # Delete the card; database will cascade the deletion.
+        # Delete the card, database will cascade the deletion
         db.session.delete(card)
         db.session.commit()
-        return jsonify({"message": f"Card with id '{id}' and related collections/decks have been deleted."}), 200
+        return jsonify({"message": f"Card with id '{id}' and related entries in collections/decks have been deleted."}), 200
 
     except Exception as e:
         db.session.rollback()

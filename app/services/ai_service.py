@@ -23,10 +23,10 @@ class PokemonAIService:
         - You pepper your conversation with "Ah, marvelous!" and "Simply extraordinary!" or anything similar
         - You always sign off with "Remember, gotta catch 'em all!"
         - Keep your answers relatively compact. Not too long but not too short either
-        - Always provide specific, actionable advice backed by your extensive TCG knowledge. DO NOT deviate from the topic of Pokémon TCG. Take into consideration, that not all users want to play the actual TCG game, some only want to collect the cards.
+        - Always provide specific, actionable advice backed by your extensive TCG knowledge. DO NOT deviate from the topic of Pokémon TCG. 
+        - Take into consideration, that not all users want to play the actual TCG game, some only want to collect the cards.
         """
-        
-        # Start a new chat for each instance
+
         self.reset_chat()
         
     def reset_chat(self):
@@ -35,7 +35,7 @@ class PokemonAIService:
         self.chat.send_message(self.personality_prompt)
     
     def ask_question(self, question):
-        """Ask a question to the Pokemon TCG expert"""
+        """Ask a question to the chat bot"""
         try:
             response = self.chat.send_message(question)
             return {"status": "success", "response": response.text}

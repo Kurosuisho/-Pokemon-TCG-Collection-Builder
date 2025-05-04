@@ -2,7 +2,6 @@
 from flask import Blueprint, request, jsonify, session
 from app.services.ai_service import PokemonAIService
 
-# Initialize the blueprint
 chat_bp = Blueprint('chat', __name__)
 
 # Shared AI service instance
@@ -42,11 +41,9 @@ def ask_question():
     
     question = data['question']
     
-    # Resets chat 
     if 'chat_reset' in data and data['chat_reset']:
         ai_service.reset_chat()
     
-    # Get response from AI
     result = ai_service.ask_question(question)
     
     if result['status'] == 'success':

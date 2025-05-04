@@ -16,7 +16,7 @@ def create_deck():
     tags:
       - Decks
     security:
-      - Bearer: []
+      - Bearer: [""]
     parameters:
       - in: body
         name: body
@@ -153,4 +153,58 @@ def add_card_to_deck(deck_id):
 
     except Exception as e:
         db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+      
+@decks_bp.route('/deck', methods=['GET'])
+@jwt_required()
+def list_decks():
+    """
+    List all decks for the current user
+    ---
+    tags:
+      - Decks
+    security:
+      - Bearer: []
+    responses:
+      200:
+        description: A list of decks
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              description:
+                type: string
+              is_public:
+                type: boolean
+              created_at:
+                type: string
+                format: date-time
+              last_updated:
+                type: string
+                format: date-time
+    """
+    try:
+        current_user_id = get_jwt_identity()
+        decks = Deck.query.filter_by(user_id=current_user_id).all()
+
+        result = []
+        for deck in decks:
+            result.append({
+                "id": deck.id,
+                "name": deck.name,
+                "description": deck.description,
+                "is_public": deck.is_public,
+                "created_at": deck.created_at.strftime('%Y-%m-%d'),
+                "last_updated": deck.last_updated.strftime('%Y-%m-%d'),
+                "card_count": sum(dc.quantity for dc in deck.deck_cards)
+            })
+
+        return jsonify(result), 200
+
+    except Exception as e:
         return jsonify({"error": str(e)}), 500
