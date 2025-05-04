@@ -208,3 +208,55 @@ def list_decks():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@decks_bp.route('/deck/<int:id>', methods=['DELETE'])
+@jwt_required()
+def delete_deck(id):
+    """
+    Delete a specific deck
+    ---
+    tags:
+      - Decks
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+        description: ID of the deck to delete
+    security:
+      - Bearer: []
+    responses:
+      200:
+        description: Removed deck and its cards from user's db
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+      404:
+        description: Deck not found
+      500:
+        description: An error occurred during deletion
+    """
+    try:
+        current_user_id = get_jwt_identity()
+        # fetch only if it belongs to this user
+        deck = Deck.query.filter_by(id=id, user_id=current_user_id).first()
+        if not deck:
+            return jsonify({"message": f"Deck with id '{id}' not found."}), 404
+
+        db.session.delete(deck)
+        db.session.commit()
+        return jsonify({
+            "message": f"Deck with id '{id}' and all associated cards have been deleted."
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "message": "An error occurred while deleting the deck.",
+            "error": str(e)
+        }), 500

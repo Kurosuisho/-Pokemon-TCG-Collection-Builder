@@ -39,7 +39,7 @@ def get_cards():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@cards_bp.route('/cards/<string:id>/delete', methods=['POST'])
+@cards_bp.route('/cards/<string:id>', methods=['DELETE'])
 @jwt_required()
 def delete_card(id):
     """
@@ -47,11 +47,25 @@ def delete_card(id):
     ---
     tags:
       - Cards
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: 'ID of the card to delete - example card: "card-1"'
     security:
       - Bearer: []
     responses:
       200:
         description: Removed card from user's db
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
       404:
         description: Card not found
       500:
@@ -62,7 +76,6 @@ def delete_card(id):
         if not card:
             return jsonify({"message": f"Card with id '{id}' not found."}), 404
 
-        # Delete the card, database will cascade the deletion
         db.session.delete(card)
         db.session.commit()
         return jsonify({"message": f"Card with id '{id}' and related entries in collections/decks have been deleted."}), 200
