@@ -13,11 +13,27 @@ from app.models.deck import Deck
 from app.models.collection import Collection
 from app.routes import register_routes
 from app.routes.chat import chat_bp
+from authlib.integrations.flask_client import OAuth
+
+oauth = OAuth()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
-    
     app.config.from_object(config_class)
+    
+    oauth.init_app(app)
+    oauth.register(
+        name='auth0',
+        client_id=app.config['AUTH0_CLIENT_ID'],
+        client_secret=app.config['AUTH0_CLIENT_SECRET'],
+        server_metadata_url=(
+            f"https://{app.config['AUTH0_DOMAIN']}/.well-known/openid-configuration"
+        ),
+        client_kwargs={
+            'scope':    'openid profile email',
+            'audience': app.config['AUTH0_AUDIENCE']
+        }
+    )
     
     db.init_app(app)
     migrate = Migrate(app, db)
