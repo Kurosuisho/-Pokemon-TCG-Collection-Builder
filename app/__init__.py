@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flasgger import Swagger
+from flasgger import Swagger # type: ignore
 from app.db import db
 from app.config import Config
 from app.models.user import User
